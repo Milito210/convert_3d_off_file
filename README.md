@@ -1,8 +1,5 @@
 # Capsule Nets for Content Based 3D Model Retrieval
-First (as far as I know) investigation of the use of Capsule Networks for content-based 3d model retrieval. (information retrieval for 3D models)
-
-This project was accomplished in just under 4 weeks. I probably used 120 hours of total compute time split between single GPU and 8 GPU aws instances (ModelNet40 takes FOREVER to train!). The final reported accuracies are Stratified 5-Fold cross validated.
-
+Reference: https://github.com/Ryanglambert/3d_model_retriever/tree/master
 
 |   |    |
 |:----------------:|:-----------------:|
@@ -12,18 +9,10 @@ This project was accomplished in just under 4 weeks. I probably used 120 hours o
 [Content-Based 3D Model Retrieval](Content%20Based%203d%20Model%20Retrieval.pdf)
 
 ## Results
-|   | ModelNet10 |   | ModelNet40 |   |
-| -------- | ---------- | -------- | ---------- | -------- |
-|     | Score | 2xStderr | score      | 2xStderr |
-| Accuracy | 93.08% | 1.18% | 82.73% | 2.12% |
-| Mean Average Precision | 88.44% | 4.15% | 70.10% | 2.22% |
+T.B.D
 
 ## TODO:
-- clean up code
-- make replicable
-
-#### *Cleaning up as we speak
-this code has gotten pretty messy in the last week and I'm in the middle of cleaning it up. Please bare with me. 
+T.B.D
 
 ## Setup
 
@@ -33,8 +22,6 @@ this code has gotten pretty messy in the last week and I'm in the middle of clea
 cd 3d_model_retriever/
 wget http://vision.princeton.edu/projects/2014/3DShapeNets/ModelNet10.zip
 unzip ModelNet10.zip
-wget http://modelnet.cs.princeton.edu/ModelNet40.zip
-unzip ModelNet40.zip
 ```
 
     
@@ -54,7 +41,11 @@ In the root of the project
     wget http://www.patrickmin.com/binvox/linux64/binvox?rnd=1520896952313989 -O binvox
     chmod 755 binvox
 ```
-    
+- Window install:
+```
+    Go directly into the website and download: https://www.patrickmin.com/binvox/
+	Shortage link: https://www.patrickmin.com/binvox/download.php?id=2
+```
 **Make env**
 
 ```
@@ -67,11 +58,10 @@ pip install -r mac_requirements.txt
 **Convert all &ast;.off files to &ast;.binvox**
 
 ```
-python binvox_convert.py ModelNet10/ --remove-all-dupes
-python binvox_convert.py ModelNet40/ --remove-all-dupes
+python binvox_converter.py ModelNet10/ --remove-all-dupes
 ```     
 
-**Additional Notes**
+**Additional Notes (refer from the root page)**
 
 *.off files
 
