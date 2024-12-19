@@ -23,8 +23,8 @@ cd 3d_model_retriever/
 wget http://vision.princeton.edu/projects/2014/3DShapeNets/ModelNet10.zip
 unzip ModelNet10.zip
 ```
+Recommended to download directly, because wget is not supported for some platform
 
-    
 **Install binvox binary**
 
 In the root of the project
@@ -60,6 +60,31 @@ pip install -r mac_requirements.txt
 ```
 python binvox_converter.py ModelNet10/ --remove-all-dupes
 ```     
+
+**After converted, confirm it by using cmd**
+
+Locate at "path\ModelNet10\ModelNet10"
+```
+dir /s /b *.binvox | find /c ".binvox"
+```  
+It should print the value of 4899
+
+**Aggregate**
+
+Our last step is to aggregate the 4,899 data files into a single NumPy archive, for ease of access. 
+We’ll also pad the data using np.pad so that each example is 30 x 30 x 30.
+
+We’ll use binvox_rw to read the .binvox files as NumPy arrays.
+
+**Prepare data for training**
+
+Use a script to process the .binvox files into a compressed .npz file for easier handling in machine learning workflows.
+
+Make sure binvox_re.py is the same directory with preprocess.py (inside Scripts/)
+```
+python scripts/preprocess.py
+``` 
+After running this script, it Stores the training and testing data in a compressed file: data/modelnet10.npz.
 
 **Additional Notes (refer from the root page)**
 
