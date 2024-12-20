@@ -60,6 +60,11 @@ pip install -r mac_requirements.txt
 ```
 python binvox_converter.py ModelNet10/ --remove-all-dupes
 ```     
+Confirmed the process just done by local environment, when install binvox.exe and add path to system variable.
+
+Can not run in ggcolab, although installed binvox and upload file in directory.
+
+So if you would like to run in ggcolab, remember to run binvox in local first, then training in ggcolab later.
 
 **After converted, confirm it by using cmd**
 
