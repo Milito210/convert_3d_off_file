@@ -8,7 +8,10 @@ if 'linux' in sys.platform:
 elif 'darwin' in sys.platform:
     CMD = './binvox -cb -e -c -d {dim} {path}'
 elif 'win32' in sys.platform:
+    #training on in local environment(worked)
     CMD = "binvox -cb -pb -e -c -d {dim} {path}"  # Adjust to match Windows usage
+    #training on ggcolab(not worked)
+    #CMD = "./binvox -cb -pb -e -c -d {dim} {path}"  # Adjust to match Windows usage
 else:
     raise SystemError('Unsupported system. Only Windows, macOS, and Linux are supported.')
 

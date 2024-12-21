@@ -1,77 +1,67 @@
+import os
 import numpy as np
-import tensorflow as tf
-from tensorflow.keras import Sequential
-from tensorflow.keras.layers import Input, Reshape, Conv3D, Flatten, Dense
+from keras.models import Sequential
+from keras.layers import Dense, Flatten, Reshape, Conv3D
+from sklearn.utils import shuffle
 import keras
-import psutil
+import matplotlib.pyplot as plt
 
-print("GPUs available:", len(tf.config.list_physical_devices('GPU')))
-def print_memory_usage(stage):
-    print(f"{stage} Memory Usage: {psutil.virtual_memory().percent}%")
+# Load data
+#data = np.load('./data/modelnet10.npz')
+data = np.load('/content/drive/MyDrive/convert_3d_off_file/data/modelnet10.npz') #training on ggcolab
+X, y = shuffle(data['X_train'], data['y_train'])
+X_test, y_test = shuffle(data['X_test'], data['y_test'])
 
-
-# Define a generator for lazy loading
-def lazy_data_generator(file_path, batch_size, is_train=True):
-    data = np.load(file_path, mmap_mode='r')
-    if is_train:
-        X = data['X_train']
-        y = data['y_train']
-    else:
-        X = data['X_test']
-        y = data['y_test']
-
-    num_samples = len(X)
-    for start_idx in range(0, num_samples, batch_size):
-        end_idx = min(start_idx + batch_size, num_samples)
-        yield X[start_idx:end_idx].astype(np.float16), keras.utils.to_categorical(y[start_idx:end_idx], num_classes=10)
-
-
-# Print initial memory usage
-print_memory_usage("Initial")
+# Convert labels to one-hot encoding
+y = keras.utils.to_categorical(y, num_classes=10)
 
 # Define model
 model = Sequential([
-    Input(shape=(30, 30, 30)),  # Define the input explicitly
-    Reshape((30, 30, 30, 1)),  # Add a channel dimension
+    Reshape((36, 36, 36, 1), input_shape=(36, 36, 36)),
     Conv3D(16, kernel_size=6, strides=2, activation='relu'),
     Conv3D(64, kernel_size=5, strides=2, activation='relu'),
     Conv3D(64, kernel_size=5, strides=2, activation='relu'),
     Flatten(),
-    Dense(10, activation='softmax')  # Output layer for 10 classes
+    Dense(10, activation='softmax')
 ])
+print("Shape of X:", X.shape)
 
+# Compile the model
 model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
 
-# Training parameters
-batch_size = 32
-epochs = 30
-data_path = '../data/modelnet10.npz'
-
-# Training loop
-for epoch in range(epochs):
-    print(f"\nEpoch {epoch + 1}/{epochs}")
-
-    # Training generator
-    train_gen = lazy_data_generator(data_path, batch_size, is_train=True)
-    for X_batch, y_batch in train_gen:
-        model.train_on_batch(X_batch, y_batch)
-
-    # Validation generator
-    val_gen = lazy_data_generator(data_path, batch_size, is_train=False)
-    val_loss, val_acc = 0, 0
-    val_steps = 0
-    for X_batch, y_batch in val_gen:
-        metrics = model.test_on_batch(X_batch, y_batch)
-        val_loss += metrics[0]
-        val_acc += metrics[1]
-        val_steps += 1
-
-    val_loss /= val_steps
-    val_acc /= val_steps
-    print(f"Validation loss: {val_loss:.4f}, Validation accuracy: {val_acc:.4f}")
+# Train the model and save the history
+history = model.fit(X, y, batch_size=256, epochs=30, validation_split=0.2, shuffle=True)
 
 # Save the model
-model.save('./models/model.h5')
+model.save('/content/drive/MyDrive/convert_3d_off_file/models/model.keras')
 
-# Print final memory usage
-print_memory_usage("Final")
+# Ensure the directory for plots exists
+plot_dir = '/content/drive/MyDrive/convert_3d_off_file/plots'
+os.makedirs(plot_dir, exist_ok=True)
+
+# Save and display loss graph
+plt.figure(figsize=(12, 5))
+plt.plot(history.history['loss'], label='Training Loss')
+plt.plot(history.history['val_loss'], label='Validation Loss')
+plt.title('Training and Validation Loss')
+plt.xlabel('Epochs')
+plt.ylabel('Loss')
+plt.legend()
+loss_plot_path = os.path.join(plot_dir, 'loss_plot.png')
+plt.savefig(loss_plot_path)
+plt.show()
+
+# Save and display accuracy graph
+plt.figure(figsize=(12, 5))
+plt.plot(history.history['accuracy'], label='Training Accuracy')
+plt.plot(history.history['val_accuracy'], label='Validation Accuracy')
+plt.title('Training and Validation Accuracy')
+plt.xlabel('Epochs')
+plt.ylabel('Accuracy')
+plt.legend()
+accuracy_plot_path = os.path.join(plot_dir, 'accuracy_plot.png')
+plt.savefig(accuracy_plot_path)
+plt.show()
+
+print(f"Loss plot saved at: {loss_plot_path}")
+print(f"Accuracy plot saved at: {accuracy_plot_path}")

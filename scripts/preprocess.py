@@ -30,4 +30,6 @@ def voxelize_data(input_dir, output_file):
 # Example usage:
 if __name__ == '__main__':
     # Adjust the input directory to the absolute path of the ModelNet10 folder
-    voxelize_data('../ModelNet10/ModelNet10', '../data/modelnet10.npz')
+    # voxelize_data('../ModelNet10/ModelNet10', '../data/modelnet10.npz')
+    #incase training on gg colab
+    voxelize_data('/content/drive/MyDrive/convert_3d_off_file/ModelNet10/ModelNet10', '/content/drive/MyDrive/convert_3d_off_file/data/modelnet10.npz')

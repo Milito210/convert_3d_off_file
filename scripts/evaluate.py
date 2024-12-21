@@ -3,8 +3,12 @@ from keras.models import load_model
 from sklearn.metrics import accuracy_score, confusion_matrix
 
 # Load model and data
-model = load_model('./models/model.h5')
-data = np.load('./data/modelnet10.npz')
+#training in local environment
+#model = load_model('./models/model.h5')
+#data = np.load('./data/modelnet10.npz')
+#training in gg colab
+model = load_model('/content/drive/MyDrive/convert_3d_off_file/models/model.h5')
+data = np.load('/content/drive/MyDrive/convert_3d_off_file/data/modelnet10.npz')
 X_test, y_test = data['X_test'], data['y_test']
 
 # Predict
